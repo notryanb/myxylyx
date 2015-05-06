@@ -7,8 +7,8 @@ var playState = {
     this.cursor = game.input.keyboard.createCursorKeys();
     
     // Create level
-    this.createWorld();
-        
+    this.scrollingBackground();
+
     // Create a player and add it's sprite to the game center with the sprite center anchored.
 
 
@@ -50,7 +50,7 @@ var playState = {
 
   },
 
-  createWorld: function(){
+  scrollingBackground: function(){
     // Add walls to the game.
     this.background = this.add.tileSprite(0,0,this.game.width, this.game.height, 'spacebg');
     this.background.autoScroll(0,40);
