@@ -10,7 +10,10 @@ var playState = {
     this.scrollingBackground();
 
     // Create a player and add it's sprite to the game center with the sprite center anchored.
-
+    this.player = game.add.sprite(game.world.centerX,game.world.height-100,'ship');
+    this.player.anchor.setTo(0.5, 0.5);
+    game.physics.arcade.enable(this.player); 
+    this.player.body.gravity.y = -40;
 
     // Create particle effect
 
@@ -42,12 +45,22 @@ var playState = {
 
   update: function(){
     // This is called 60/sec & contains game logic.
-
+    this.movePlayer();
   },
 
   movePlayer: function(){
   // Key events go here
-
+    if (this.cursor.left.isDown) {
+      this.player.body.velocity.x = -200;
+    } else if (this.cursor.right.isDown) {
+      this.player.body.velocity.x = 200;
+    } else if (this.cursor.down.isDown) {
+      this.player.body.velocity.y = 200;
+    } else if (this.cursor.up.isDown) {
+      this.player.body.velocity.y = -200;
+    } else { 
+      this.player.body.velocity.x = 0;
+      this.player.body.velocity.y = 0; }
   },
 
   scrollingBackground: function(){
