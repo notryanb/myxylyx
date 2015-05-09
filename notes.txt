@@ -1,0 +1,10 @@
+Game features to be added:
+
+Cave style shmup, with 5 levels.
+Three weapons [regular shot, power shot, bomb]
+Three selectable ship types.
+
+
+Scrolling Background:
+  \\ Ideally it will be one entire unique map with no repeating. When the end of the map is reached, there should be a repeating background section for a boss battle.
+  \\
