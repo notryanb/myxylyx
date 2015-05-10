@@ -6,6 +6,7 @@ game.global = {
     score: 0
 };
 
+
 // Add the states
 game.state.add('boot', bootState);
 game.state.add('load', loadState);
