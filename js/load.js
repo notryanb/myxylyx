@@ -14,9 +14,9 @@ var loadState = {
 
     // Load all of the game assets
     game.load.image('tileset', 'assets/tileset.png');
+    game.load.image('bullet', 'assets/bullet.PNG');
     game.load.image('spacebg', 'assets/spaceBG.png');
     game.load.image('ship', 'assets/spiked_ship_small.green.PNG');
-    game.load.image('bullet', 'assets/bullet.PNG');
     game.load.spritesheet('muteButton','assets/muteButton.png', 28, 22);
 
     // Load audio files

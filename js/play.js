@@ -61,7 +61,7 @@
 
       Phaser.Group.call(this, game, game.world, 'Single Bullet', false, true, Phaser.Physics.ARCADE);
 
-      this.nextFire = 0;
+      this.nextFire = 1000;
       this.bulletSpeed = 600;
       this.fireRate = 100;
 
@@ -108,13 +108,13 @@ var playState = {
     game.physics.arcade.enable(this.player); 
     this.player.body.collideWorldBounds = true;
 
-    // Create particle effect
-
+    // Create bullet
+    this.singleBullet = new Weapon.SingleBullet(this.game);
 
 
     // Display score
-    this.scoreLabel = game.add.text(30, 30, 'score: 0',
-      { font: '18px Verdana', fill: '#FFFFFF' })
+    this.scoreLabel = game.add.text(30, 30, 'SCORES!: 0',
+      { font: '18px Verdana', fill: '#00ff00' })
     game.global.score = 0;
 
     // Connect sounds to actions
@@ -134,8 +134,6 @@ var playState = {
       shoot: game.input.keyboard.addKey(Phaser.Keyboard.Z)
     }
 
-    // var shoot = new Weapon.SingleBullet(this.game);
-
   },
 
   update: function(){
@@ -154,8 +152,7 @@ var playState = {
     } else if (this.cursor.up.isDown) {
       this.player.body.velocity.y = -200;
     } else if (this.wasd.shoot.isDown) {
-      var shoot = new Weapon.SingleBullet(this.game);
-      shoot.fire(this.player);
+      this.singleBullet.fire(this.player);
     } else { 
       this.player.body.velocity.x = 0;
       this.player.body.velocity.y = 0; }
