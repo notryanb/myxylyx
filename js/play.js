@@ -61,7 +61,7 @@
 
       Phaser.Group.call(this, game, game.world, 'Single Bullet', false, true, Phaser.Physics.ARCADE);
 
-      this.nextFire = 0;
+      this.nextFire = 1000;
       this.bulletSpeed = 600;
       this.fireRate = 100;
 
@@ -108,33 +108,22 @@ var playState = {
     game.physics.arcade.enable(this.player); 
     this.player.body.collideWorldBounds = true;
 
-    // Create particle effect
-
+    // Create bullet
+    this.singleBullet = new Weapon.SingleBullet(this.game);
 
 
     // Display score
-    this.scoreLabel = game.add.text(30, 30, 'score: 0',
-      { font: '18px Verdana', fill: '#FFFFFF' })
+    this.scoreLabel = game.add.text(30, 30, 'SCORES!: 0',
+      { font: '18px Verdana', fill: '#00ff00' })
     game.global.score = 0;
 
     // Connect sounds to actions
 
 
-    // Capture keys so the browser doesn't use them for navigation.
-    game.input.keyboard.addKeyCapture([Phaser.Keyboard.UP, 
-                                       Phaser.Keyboard.DOWN,
-                                       Phaser.Keyboard.LEFT,
-                                       Phaser.Keyboard.RIGHT]);
+    // Define Key input
+    this.cursors = game.input.keyboard.createCursorKeys();
+    this.input.keyboard.addKeyCapture([ Phaser.Keyboard.SPACEBAR ]);
 
-    // Add support for WASD
-    this.wasd = {
-      up: game.input.keyboard.addKey(Phaser.Keyboard.W),
-      left: game.input.keyboard.addKey(Phaser.Keyboard.A),
-      right: game.input.keyboard.addKey(Phaser.Keyboard.D),
-      shoot: game.input.keyboard.addKey(Phaser.Keyboard.Z)
-    }
-
-    // var shoot = new Weapon.SingleBullet(this.game);
 
   },
 
@@ -145,20 +134,27 @@ var playState = {
 
   movePlayer: function(){
   // Key events go here
-    if (this.cursor.left.isDown) {
-      this.player.body.velocity.x = -200;
-    } else if (this.cursor.right.isDown) {
-      this.player.body.velocity.x = 200;
-    } else if (this.cursor.down.isDown) {
-      this.player.body.velocity.y = 200;
-    } else if (this.cursor.up.isDown) {
-      this.player.body.velocity.y = -200;
-    } else if (this.wasd.shoot.isDown) {
-      var shoot = new Weapon.SingleBullet(this.game);
-      shoot.fire(this.player);
-    } else { 
-      this.player.body.velocity.x = 0;
-      this.player.body.velocity.y = 0; }
+
+        this.speed = 300;
+        this.player.body.velocity.set(0);
+
+        if (this.cursors.left.isDown) {
+            this.player.body.velocity.x = -this.speed;
+        }
+        else if (this.cursors.right.isDown) {
+            this.player.body.velocity.x = this.speed;
+        }
+
+        if (this.cursors.up.isDown) {
+            this.player.body.velocity.y = -this.speed;
+        }
+        else if (this.cursors.down.isDown) {
+            this.player.body.velocity.y = this.speed;
+        }
+
+        if (this.input.keyboard.isDown(Phaser.Keyboard.SPACEBAR)) {
+            this.singleBullet.fire(this.player);
+        }
   },
 
   scrollingBackground: function(){
