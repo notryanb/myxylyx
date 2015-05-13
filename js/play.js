@@ -61,7 +61,7 @@
 
       Phaser.Group.call(this, game, game.world, 'Single Bullet', false, true, Phaser.Physics.ARCADE);
 
-      this.nextFire = 1000;
+      this.nextFire = 0;
       this.bulletSpeed = 600;
       this.fireRate = 100;
 
@@ -97,10 +97,16 @@ var playState = {
     // Called after preload. setup game, sprites, etc...
 
     // Setting up controls
-    this.cursor = game.input.keyboard.createCursorKeys();
+    this.cursors = game.input.keyboard.createCursorKeys();
+
+    // Capture keys so the browser does not use them
+    this.input.keyboard.addKeyCapture([ Phaser.Keyboard.SPACEBAR ]);
     
     // Create level
     this.scrollingBackground();
+
+    // Create bullet
+    this.singleBullet = new Weapon.SingleBullet(this.game);
 
     // Create a player and add it's sprite to the game center with the sprite center anchored.
     this.player = game.add.sprite(game.world.centerX,game.world.height-100,'ship');
@@ -108,8 +114,7 @@ var playState = {
     game.physics.arcade.enable(this.player); 
     this.player.body.collideWorldBounds = true;
 
-    // Create bullet
-    this.singleBullet = new Weapon.SingleBullet(this.game);
+ 
 
 
     // Display score
@@ -120,9 +125,7 @@ var playState = {
     // Connect sounds to actions
 
 
-    // Define Key input
-    this.cursors = game.input.keyboard.createCursorKeys();
-    this.input.keyboard.addKeyCapture([ Phaser.Keyboard.SPACEBAR ]);
+
 
 
   },
