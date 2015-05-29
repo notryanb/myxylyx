@@ -1,56 +1,44 @@
-var menuState = {
-  create: function(){
-    // Add the menu background image
-    game.add.image(0, 0, 'background');
+BasicGame.MainMenu = function (game) {
 
-    // Display game title
-    var nameLabel = game.add.text(game.world.centerX, -50, 'M Y X Y L Y X',
-      { font: '70px Geo', fill: '#ffffff' });
-    nameLabel.anchor.setTo(0.5, 0.5);
-    var tween = game.add.tween(nameLabel).to({y: 80}, 
-      1000).easing(Phaser.Easing.Bounce.Out).start();
+  this.music = null;
+  this.playButton = null;
 
-    // Display the score
-    if(!localStorage.getItem('bestScore')){ 
-      localStorage.setItem('bestScore', 0); 
-    }
+};
 
-    if(game.global.score > localStorage.getItem('bestScore')){
-      localStorage.setItem('bestScore', game.global.score);
-    }
+BasicGame.MainMenu.prototype = {
 
-    var text = 'score: ' + game.global.score + '\nbest score: ' +
-      localStorage.getItem('bestScore');
-    var scoreLabel = game.add.text(game.world.centerX, game.world.centerY, 
-                    'score: ' + text,
-                    { font: '25px Verdana', fill: '#ffffff', align: 'center' });
-    scoreLabel.anchor.setTo(0.5, 0.5);
+  create: function () {
 
-    // Menu instructions
-    var startLabel = game.add.text(game.world.centerX, game.world.height - 80,
-                                  'press the up arrow key to start ',
-                                  { font:'25px Verdana',fill:'#ffffff' } );
-    startLabel.anchor.setTo(0.5, 0.5);
-    var startTween = game.add.tween(startLabel).to({angle: -2},
-      500).to({angle: 2}, 500).loop().start();
+    //  We've already preloaded our assets, so let's kick right into the Main Menu itself.
+    //  Here all we're doing is playing some music and adding a picture and button
+    //  Naturally I expect you to do something significantly better :)
 
-    // Add a mute button
-    this.muteButton = game.add.button(20, 20, 'muteButton', this.toggleSound, this);
-    this.muteButton.input.useHandCursor = true;
-    if(game.sound.mute){ this.muteButton.frame = 1; }
+    // this.add.sprite(0, 0, 'titlepage');
 
-    // Keyboard input for menu
-    var upKey = game.input.keyboard.addKey(Phaser.Keyboard.UP);
-    upKey.onDown.addOnce(this.start, this);
+    this.loadingText = this.add.text(this.game.width / 2, this.game.height / 2 + 80, "Press Z or tap/click game to start", { font: "20px monospace", fill: "#fff" });
+    this.loadingText.anchor.setTo(0.5, 0.5);
+    // this.add.text(this.game.width / 2, this.game.height - 90, "image assets Copyright (c) 2002 Ari Feldman", { font: "12px monospace", fill: "#fff", align: "center"}).anchor.setTo(0.5, 0.5);
+    // this.add.text(this.game.width / 2, this.game.height - 75, "sound assets Copyright (c) 2012 - 2013 Devin Watson", { font: "12px monospace", fill: "#fff", align: "center"}).anchor.setTo(0.5, 0.5);
+
   },
 
-  toggleSound: function(){
-    game.sound.mute = ! game.sound.mute;
-    this.muteButton.frame = game.sound.mute ? 1 : 0;
+  update: function () {
+
+    if (this.input.keyboard.isDown(Phaser.Keyboard.Z) || this.input.activePointer.isDown) {
+      this.startGame();
+    }
+    //  Do some nice funky main menu effect here
+
   },
 
-  start: function(){
-    game.state.start('play');
+  startGame: function (pointer) {
+
+    //  Ok, the Play Button has been clicked or touched, so let's stop the music (otherwise it'll carry on playing)
+    // this.music.stop();
+
+    //  And start the actual game
+    this.state.start('Game');
+
   }
 
 };
