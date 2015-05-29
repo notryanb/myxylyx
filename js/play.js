@@ -1,100 +1,74 @@
-  // Create Bullet Object
+// Create Enemy Object
 
-  var Bullet = function (game, key) {
+var Enemy = function (game, key) {
+  Phaser.Sprite.call(this, game, 0, 0, key);
 
-      Phaser.Sprite.call(this, game, 0, 0, key);
+  this.texture.baseTexture.scaleMode = PIXI.scaleModes.NEAREST;
+  this.anchor.setTo(0.5,0.5);
+  this.exists = false;
+  this.scaleSpeed = 0;
 
-      this.texture.baseTexture.scaleMode = PIXI.scaleModes.NEAREST;
+};
 
-      this.anchor.set(0.5);
+Enemy.prototype = Object.create(Phaser.Sprite.prototype);
+Enemy.prototype.constructor = Enemy;
 
-      this.checkWorldBounds = true;
-      this.outOfBoundsKill = true;
-      this.exists = false;
+Enemy.prototype.spawn = function (x, y, angle, speed, gx, gy) {
 
-      this.tracking = false;
-      this.scaleSpeed = 0;
+    gx = gx || 0;
+    gy = gy || 0;
 
-  };
+    this.reset(x, y);
+    this.scale.set(1);
 
-  Bullet.prototype = Object.create(Phaser.Sprite.prototype);
-  Bullet.prototype.constructor = Bullet;
+    this.game.physics.arcade.velocityFromAngle(angle, speed, this.body.velocity);
 
-  Bullet.prototype.fire = function (x, y, angle, speed, gx, gy) {
+    this.angle = angle;
 
-      gx = gx || 0;
-      gy = gy || 0;
+    this.body.gravity.set(gx, gy);
 
-      this.reset(x, y);
-      this.scale.set(1);
+};
 
-      this.game.physics.arcade.velocityFromAngle(angle, speed, this.body.velocity);
+////////////////////////////////////////////////////
+//         Create a basic type of enemy          //
+////////////////////////////////////////////////////
+var EnemyType = {};
 
-      this.angle = angle;
+EnemyType.Grunt = function (game) {
+  Phaser.Group.call(this, game, game.world, 'enemy', false, true, Phaser.Physics.ARCADE);
 
-      this.body.gravity.set(gx, gy);
+  this.nextSpawn = 0;
+  this.enemySpeed = 150;
+  this.spawnRate = 1000;
 
-  };
+  for (var i = 0; i < 15; i++) {
+    this.add(new Enemy(this.game, 'enemy'), true)
+  }
+  return this;
+};
 
-  Bullet.prototype.update = function () {
+EnemyType.Grunt.prototype = Object.create(Phaser.Group.prototype);
+EnemyType.Grunt.prototype.constructor = EnemyType.Grunt;
 
-      if (this.tracking)
-      {
-          this.rotation = Math.atan2(this.body.velocity.y, this.body.velocity.x);
-      }
+EnemyType.Grunt.prototype.spawn = function (source) {
 
-      if (this.scaleSpeed > 0)
-      {
-          this.scale.x += this.scaleSpeed;
-          this.scale.y += this.scaleSpeed;
-      }
+    if (this.game.time.time < this.nextSpawn) { return; }
 
-  };
+    var x = source.x + 50;
+    var y = source.y + 50;
 
-  var Weapon = {};
+    this.getFirstExists(false).spawn(x, y, 90, this.enemySpeed, 50, 50);
 
-  ////////////////////////////////////////////////////
-  //  A single bullet is fired in front of the ship //
-  ////////////////////////////////////////////////////
+    this.nextSpawn = this.game.time.time + this.spawnRate;
 
-  Weapon.SingleBullet = function (game) {
-
-      Phaser.Group.call(this, game, game.world, 'Single Bullet', false, true, Phaser.Physics.ARCADE);
-
-      this.nextFire = 0;
-      this.bulletSpeed = 600;
-      this.fireRate = 100;
-
-      for (var i = 0; i < 64; i++)
-      {
-          this.add(new Bullet(game, 'bullet'), true);
-      }
-
-      return this;
-
-  };
-
-  Weapon.SingleBullet.prototype = Object.create(Phaser.Group.prototype);
-  Weapon.SingleBullet.prototype.constructor = Weapon.SingleBullet;
-
-  Weapon.SingleBullet.prototype.fire = function (source) {
-
-      if (this.game.time.time < this.nextFire) { return; }
-
-      var x = source.x + 10;
-      var y = source.y + 10;
-
-      this.getFirstExists(false).fire(x, y, 270, this.bulletSpeed, 0, 0);
-
-      this.nextFire = this.game.time.time + this.fireRate;
-
-  };
+};
 
 
+
+  
 var playState = {
 
   create: function(){
-    // Called after preload. setup game, sprites, etc...
 
     // Setting up controls
     this.cursors = game.input.keyboard.createCursorKeys();
@@ -102,10 +76,10 @@ var playState = {
     // Capture keys so the browser does not use them
     this.input.keyboard.addKeyCapture([ Phaser.Keyboard.SPACEBAR ]);
     
-    // Create level
+    // Create level with scrolling BG
     this.scrollingBackground();
 
-    // Create bullet
+    // Create bullets
     this.singleBullet = new Weapon.SingleBullet(this.game);
 
     // Create a player and add it's sprite to the game center with the sprite center anchored.
@@ -114,7 +88,14 @@ var playState = {
     game.physics.arcade.enable(this.player); 
     this.player.body.collideWorldBounds = true;
 
- 
+
+    // Create Enemy
+    this.enemy = new EnemyType.Grunt(this.game);
+    this.enemy.spawn(this.game);
+    this.enemy.spawn(this.game);
+    this.enemy.spawn(this.game);
+    this.enemy.spawn(this.game);
+    
 
 
     // Display score
@@ -171,6 +152,7 @@ var playState = {
   // When you get hit...
   },
 
+  // Call this when game over
   startMenu: function(){
     game.state.start('menu');
   },

@@ -1,6 +1,7 @@
 var loadState = {
   preload: function(){
 
+
     // Create the Loading message
     var loadingLabel = game.add.text(game.world.centerX, 150, 'loading...',
       { font: '30px Verdana', fill: '#ffffff' });
@@ -15,6 +16,8 @@ var loadState = {
     // Load all of the game assets
     game.load.image('tileset', 'assets/tileset.png');
     game.load.image('bullet', 'assets/bullet.png');
+    this.load.spritesheet('greenEnemy', 'assets/enemy.png', 32, 32);
+    game.load.image('enemy', 'assets/fake_enemy.png');
     game.load.image('spacebg', 'assets/spaceBG.png');
     game.load.image('ship', 'assets/spiked_ship_small.green.png');
     game.load.spritesheet('muteButton','assets/muteButton.png', 28, 22);
@@ -24,6 +27,7 @@ var loadState = {
 
     // Load menu asset
     game.load.image('background','assets/menu_background.jpg');
+
   },
 
   create: function(){
